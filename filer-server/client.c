@@ -9,7 +9,7 @@
 
 
 int main(int argc, char *argv[]) {
-	if (argc < 2) { printf("too few arguments\n"); exit(1); }
+	if (argc < 3) { printf("too few arguments\n"); exit(1); }
 
 
 	struct socket_information results;
@@ -31,12 +31,12 @@ int main(int argc, char *argv[]) {
 
 	// requesting file
 	FILE* fptr;
-	fptr = fopen(argv[1], "wb");
+	fptr = fopen(argv[2], "wb");
 	if (fptr == NULL) {
 		printf("The file was not opened\n");
 		exit(1);
 	}
-	strcpy(request_buffer, "./work/white.jpeg");
+	strcpy(request_buffer, argv[1]);
 	send(server_socket, request_buffer, sizeof(request_buffer), 0);
 
 
