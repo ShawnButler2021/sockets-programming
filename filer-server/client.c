@@ -26,17 +26,17 @@ int main(int argc, char *argv[]) {
 
 	// setting up buffer variables
 	char request_buffer[BUF_SIZE];
-	char server_buffer[BUF_SIZE];
+	unsigned char server_buffer[BUF_SIZE];
 	int bytes, flag;
 
 	// requesting file
 	FILE* fptr;
-	fptr = fopen(argv[1], "w");
+	fptr = fopen(argv[1], "wb");
 	if (fptr == NULL) {
 		printf("The file was not opened\n");
 		exit(1);
 	}
-	strcpy(request_buffer, "./work/globalsimulations.slim");
+	strcpy(request_buffer, "./work/white.jpeg");
 	send(server_socket, request_buffer, sizeof(request_buffer), 0);
 
 
@@ -45,13 +45,13 @@ int main(int argc, char *argv[]) {
 		server_buffer[bytes] = '\0';  // trimming tail of file read
 		
 
-		flag = fwrite(server_buffer, sizeof(char), BUF_SIZE, fptr);
+		flag = fwrite(server_buffer, sizeof(unsigned char), BUF_SIZE, fptr);
 		if (!flag) {
 			printf("Error writing\n");
 			exit(1);
 		}
 
-		memset(server_buffer, '.', sizeof(char)*BUF_SIZE);
+		memset(server_buffer, '.', sizeof(unsigned char)*BUF_SIZE);
 	}
 
 
