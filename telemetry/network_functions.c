@@ -4,10 +4,14 @@
 #include <netdb.h>
 
 
+
 #include <stdio.h> // printf
 #include <string.h> // memset
 #include <unistd.h> // close
+#include <stdlib.h> // malloc
 
+int NUM_OF_SOCKETS = 0;
+int **sockets;
 
 struct socket_information {
 	struct addrinfo* info;
@@ -15,7 +19,7 @@ struct socket_information {
 };
 
 
-struct addrinfo* get_sock_info(char port[5]) {
+struct addrinfo* get_sock_info(char *ip, char port[5]) {
 	struct addrinfo hints;
 	struct addrinfo* res;
 
@@ -23,7 +27,7 @@ struct addrinfo* get_sock_info(char port[5]) {
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE;
-	int addr_error = getaddrinfo("127.0.0.1", port, &hints, &res);
+	int addr_error = getaddrinfo(ip, port, &hints, &res);
 	if (addr_error != 0) {
 		const char *error_string;
 		error_string = gai_strerror(addr_error);
@@ -32,10 +36,10 @@ struct addrinfo* get_sock_info(char port[5]) {
 
 	return res;
 }
-struct socket_information socket_setup(char port[5]) {
+struct socket_information socket_setup(char *ip, char port[5]) {
 	struct socket_information si;
 
-	si.info = get_sock_info(port);
+	si.info = get_sock_info(ip, port);
 	si.socket_fd = socket(
 		si.info->ai_family,
 		si.info->ai_socktype,
@@ -54,4 +58,7 @@ int accept_client_connection(int host_socket) {
 		&size
 	);
 }
-
+void resize_num_of_sockets(int amount) {
+	NUM_OF_SOCKETS = amount;
+	sockets = (int **)malloc(amount * sizeof(int));
+}
